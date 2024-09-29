@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Lot Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            margin-top: 20px;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+        }
+        table {
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-top: 15px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        #notification {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Parking Lot Management</h1>
+
+        <a href="/livecar.html" class="btn btn-link">Go to Live Car Page</a>
+
+        <!-- Parking Slot Table -->
+        <table class="table table-bordered mt-4">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Slot ID</th>
+                    <th>Status</th>
+                    <th>Registration Number</th>
+                    <th>Mobile</th>
+                </tr>
+            </thead>
+            <tbody id="parking-slot-table">
+                {% for spot in spots %}
+                <tr>
+                    <td>{{ spot.slot_id }}</td>
+                    <td>{{ spot.status }}</td>
+                    <td>{{ spot.reg_number if spot.reg_number else 'N/A' }}</td>
+                    <td>{{ spot.mob if spot.mob else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Empty Slots</h2>
+        <ul class="list-group mb-4" id="empty-slots-list">
+            {% for spot in spots %}
+                {% if spot.status == 'vacant' %}
+                <li class="list-group-item">{{ spot.slot_id }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h2>Book a Slot</h2>
+        <form id="booking-form" class="mb-4">
+            <div class="form-group">
+                <label for="slot_id">Slot ID:</label>
+                <select class="form-control" id="slot_id" name="slot_id" required>
+                    <option value="" disabled selected>Select a vacant slot</option>
+                    {% for spot in spots %}
+                        {% if spot.status == 'vacant' %}
+                            <option value="{{ spot.slot_id }}">{{ spot.slot_id }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reg_number">Registration Number:</label>
+                <input type="text" class="form-control" id="reg_number" name="reg_number" required>
+            </div>
+            <div class="form-group">
+                <label for="mob">Mobile:</label>
+                <input type="text" class="form-control" id="mob" name="mob" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Book Slot</button>
+        </form>
+        
+        <!-- Notification area -->
+        <div id="notification" class="alert" style="display: none;"></div>
+        <h2>Unbook a Slot</h2>
+        
+        <form id="unbooking-form" class="mb-4">
+            <div class="form-group">
+                <label for="unbook_slot_id">Slot ID:</label>
+                <select class="form-control" id="unbook_slot_id" name="slot_id" required>
+                    <option value="" disabled selected>Select an occupied slot</option>
+                    {% for spot in spots %}
+                        {% if spot.status == 'occupied' %}
+                            <option value="{{ spot.slot_id }}">{{ spot.slot_id }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-danger">Unbook Slot</button>
+        </form>
+
+        <h2>Find Your Car</h2>
+        <form id="find-form" class="mb-4">
+            <div class="form-group">
+                <label for="find_reg_number">Registration Number:</label>
+                <input type="text" class="form-control" id="find_reg_number" name="reg_number" required>
+            </div>
+            <button type="submit" class="btn btn-secondary">Find Car</button>
+        </form>
+
+
+    </div>
+
+    <script>
+        // Handle booking form submission
+        document.getElementById('booking-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/book', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            showNotification(result.message, result.status === 'success' ? 'success' : 'danger');
+
+            if (result.status === 'success') {
+                // Refresh the parking slots after booking
+                await refreshSlots();
+            }
+        };
+
+        // Handle unbooking form submission
+        document.getElementById('unbooking-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/unbook', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            showNotification(result.message, result.status === 'success' ? 'success' : 'danger');
+
+            if (result.status === 'success') {
+                // Refresh the parking slots after unbooking
+                await refreshSlots();
+            }
+        };
+
+        // Handle find car form submission
+        document.getElementById('find-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/find_car', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            showNotification(result.status === 'found' ? `Your car is in slot: ${result.slot_id}` : result.message, result.status === 'found' ? 'success' : 'danger');
+        };
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.className = `alert alert-${type}`;
+            notification.innerText = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Refresh parking slots
+        async function refreshSlots() {
+            const response = await fetch('/refresh');
+            const data = await response.json();
+
+            // Update the table with new data
+            const tbody = document.getElementById('parking-slot-table');
+            tbody.innerHTML = '';
+            data.spots.forEach(spot => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${spot.slot_id}</td>
+                    <td>${spot.status}</td>
+                    <td>${spot.reg_number || 'N/A'}</td>
+                    <td>${spot.mob || 'N/A'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update empty slots list
+            const emptySlotsList = document.getElementById('empty-slots-list');
+            emptySlotsList.innerHTML = '';
+            data.spots.forEach(spot => {
+                if (spot.status === 'vacant') {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item';
+                    listItem.textContent = spot.slot_id;
+                    emptySlotsList.appendChild(listItem);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
