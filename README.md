@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/MrStrange007/Smart-Parking-Management-System">
-    <img src="readme-images/logo.png" alt="Logo" width="80" height="80">
+   <!-- <img src="readme-images/logo.png" alt="Logo" width="80" height="80">  -->
   </a>
 
   <h3 align="center">Smart Parking Management System</h3>
@@ -237,7 +237,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Mr. Strange - [@MrStrange007]
+Aayush Somvanshi - [@AayushSomvanshi]
 
 Project Link: [https://github.com/MrStrange007/Smart-Parking-Management-System](https://github.com/MrStrange007/Smart-Parking-Management-System)
 
@@ -253,7 +253,6 @@ Creating a project like the Parking Space Counter requires a lot of research, ex
 * [Computer Vision Zone](https://www.computervision.zone/)
 * [Murtaza's Workshop - Robotics and AI](https://www.youtube.com/@murtazasworkshop)
 * [ChatGPT](https://chat.openai.com/chat)
-* [Choose an Open Source License](https://choosealicense.com)
 * [Img Shields](https://shields.io)
 
 
