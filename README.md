@@ -237,7 +237,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Aayush Somvanshi - [@AayushSomvanshi]
+[Aayush Somvanshi](@AayushSomvanshi)
 
 Project Link: [https://github.com/MrStrange007/Smart-Parking-Management-System](https://github.com/MrStrange007/Smart-Parking-Management-System)
 
