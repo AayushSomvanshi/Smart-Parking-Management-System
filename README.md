@@ -245,15 +245,6 @@ Project Link: [https://github.com/MrStrange007/Smart-Parking-Management-System](
 
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Creating a project like the Parking Space Counter requires a lot of research, experimentation, and dedication. I would like to take this opportunity to acknowledge and thank the many individuals, channels, and websites that helped me along the way. Without their guidance and support, this project would not have been possible. In particular, I would like to recommend the following channels and websites for their invaluable resources and contributions to the field of computer vision and image processing.
-
-* [Computer Vision Zone](https://www.computervision.zone/)
-* [Murtaza's Workshop - Robotics and AI](https://www.youtube.com/@murtazasworkshop)
-* [ChatGPT](https://chat.openai.com/chat)
-* [Img Shields](https://shields.io)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
